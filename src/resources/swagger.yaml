@@ -1,0 +1,175 @@
+openapi: 3.0.1
+info:
+  title: EventNofityCatcher
+  description: Este servicio se encargará recibir un evento genérico y depositarlo en un tópico Kafka.
+  version: 1.0.0
+servers:
+- url: https://api.tigo.com.hn//eventmanagement/v1/api/event/notify
+tags:
+- name: EventNofityCatcher
+  description: Este servicio se encargará recibir un evento genérico y depositarlo en un tópico Kafka.
+
+paths:
+
+  /consumer/{consumer}:
+    post:
+      tags:
+      - EventNofityCatcher
+      summary: Este servicio se encargará recibir un evento genérico y depositarlo en un tópico Kafka.
+      parameters:
+      - $ref: '#/components/parameters/consumer'
+
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/requestBody'
+        required: true
+      
+      responses:
+        200:
+          description: Transaccion Realizada Exitosamente.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generalResponse'
+        400:
+          description: Mensaje de Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generalResponse'
+        401:
+          description: Credenciales Invalidas.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generalResponse' 
+        500:
+          description: Internal Server Error.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/generalResponse'
+  
+components:
+
+  parameters:
+    authorization:
+      in: header
+      name: Authorization
+      description: Credenciales de acceso al servidor weblogic.
+      required: true
+      schema:
+        type: string
+
+    consumer:
+      in: path
+      name: consumer
+      description: Identificador de consumidor de API.
+      required: true
+      schema:
+        type: number
+      example: 28
+
+  schemas:
+
+    requestBody:
+      type: object
+      properties:
+        event_header:
+          $ref: '#/components/schemas/event_header'
+        event_data:
+          $ref: '#/components/schemas/event_data'
+
+    generalResponse:
+      type: object
+      properties:
+        uti:
+          type: string
+          enum: ["string"]
+          description: Identificador unico de la transaccion.
+          example: UTI
+        status: 
+          type: string
+          enum: ["string"]
+          description: Estado de la transaccion.
+          example: Status
+        code: 
+          type: string
+          enum: ["string"]
+          description: Código de la ejecucion.
+          example: Code
+        message: 
+          type: string
+          enum: ["string"]
+          description: Mensaje de la ejecucion.
+          example: Message
+          
+    event_header:
+      type: object
+      properties:
+        subscriber: 
+          type: string
+          enum: ["string"]
+          description: Número de teléfono o de contrato.
+          example: 99999999
+        accountid: 
+          type: string
+          enum: ["string"]
+          description: Cuenta de facturación.
+          example: 12345
+        event_type: 
+          type: string
+          enum: ["string"]
+          description: Identificador de tipo del evento.
+          example: Activation
+        event_name: 
+          type: string
+          enum: ["string"]
+          description: Nombre del evento.
+          example: CHANGE_STATUS
+        event_source: 
+          type: string
+          enum: ["string"]
+          description: Fuente de generación del evento.
+          example: CRM
+        event_id: 
+          type: string
+          enum: ["string"]
+          description: Identificador del evento.
+          example: CHANGE_STATUS
+        event_time: 
+          type: string
+          enum: ["string"]
+          description: Identificador del evento.
+          example: 07-06-2024 04:03:06
+        domain: 
+          type: string
+          enum: ["string"]
+          description: Dominio de producción del evento.
+          example: Sales & Care
+        version: 
+          type: string
+          enum: ["string"]
+          description: Versión del evento.
+          example: "1.0"
+        
+    event_data:
+      type: object
+      properties:
+        detail:
+          type: array
+          items:
+            type: object
+            properties:
+              name:
+                type: string
+                enum: ["string"]
+                description: Nombre del key.
+                example: msisdn
+              value:
+                type: string
+                enum: ["string"]
+                description: Valor del key.
+                example: 99999999
